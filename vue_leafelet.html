@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaflet with Vue.js</title>
+
+    <!-- Include Leaflet CSS and JavaScript -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css">
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+    <!-- Include Vue.js -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14"></script>
+</head>
+<body>
+    <br>
+    <div id="app">
+        <leaflet-map></leaflet-map>
+    </div>
+
+    <script>
+        Vue.component('leaflet-map', {
+            template: '<div id="map" style="height: 400px;"></div>',
+            mounted() {
+                this.initMap();
+            },
+            methods: {
+                initMap() {
+                    const map = L.map('map').setView([-6, 107.05], 12);
+
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                    }).addTo(map);
+                    
+                    var geo_deskel = L.tileLayer.wms(
+                        "http://34.101.221.129:8080/geoserver/ddp/wms?",
+                        {
+                        layers: `ddp:land_uses`,
+                        format: "image/png",
+                        opacity: 0.45,
+                        CQL_FILTER: "INCLUDE",
+                        transparent: true,
+                        }
+                    );
+
+                    geo_deskel.addTo(map);
+                }             
+            }
+        });
+
+        new Vue({
+            el: '#app',
+        });
+    </script>
+</body>
+</html>
